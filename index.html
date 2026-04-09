@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mikel Calderon — MIDS 2026 — You're Invited</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@400;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/devicon/2.15.1/devicon.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+:root {
+  --gold:#FDB515; --gold-dim:#C8900F; --gold-pale:#FEF0C7;
+  --blue:#003262; --blue-mid:#1A4A7A; --blue-light:#3B7EA1;
+  --blue-pale:#EEF4F8; --cream:#FDFAF3; --ink:#0E1B2A;
+  --muted:#4A5E72; --rule:rgba(0,50,98,0.1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;font-size:17px;line-height:1.6;overflow-x:hidden;}
+
+#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;}
+
+/* HERO */
+.hero{min-height:100vh;background:var(--blue);display:grid;place-items:center;position:relative;overflow:hidden;padding:4rem 2rem;}
+.hero-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(253,181,21,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(253,181,21,0.04) 1px,transparent 1px);background-size:48px 48px;}
+.hero-glow{position:absolute;width:800px;height:800px;background:radial-gradient(circle,rgba(253,181,21,0.08) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+.hero-inner{position:relative;z-index:2;text-align:center;max-width:860px;}
+.hero-badge{display:inline-flex;align-items:center;gap:.8rem;border:1px solid rgba(253,181,21,.35);padding:.5rem 1.4rem;margin-bottom:2.5rem;font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;opacity:0;animation:riseIn .7s .2s forwards;}
+.hero-badge::before,.hero-badge::after{content:'';display:block;width:20px;height:1px;background:var(--gold);opacity:.4;}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(4rem,11vw,9rem);font-weight:900;color:var(--cream);line-height:.9;letter-spacing:-.03em;margin-bottom:2rem;opacity:0;animation:riseIn .8s .4s forwards;}
+.hero-title .gold{color:var(--gold);font-style:italic;}
+.hero-title .block{display:block;}
+.hero-sub{font-size:1.15rem;color:rgba(253,248,243,.65);font-weight:300;line-height:1.75;max-width:580px;margin:0 auto 3rem;opacity:0;animation:riseIn .8s .6s forwards;}
+.hero-meta{font-family:'IBM Plex Mono',monospace;font-size:.78rem;letter-spacing:.15em;color:rgba(253,181,21,.75);line-height:2.4;opacity:0;animation:riseIn .8s .8s forwards;}
+.hero-links{display:inline-flex;gap:1.5rem;margin-top:1rem;opacity:.55;}
+.hero-links a{color:var(--gold);text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.15em;}
+.hero-links a:hover{opacity:.8;}
+.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.3em;color:rgba(253,181,21,.3);text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:.5rem;animation:scrollPulse 2.5s ease-in-out infinite;}
+@keyframes riseIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scrollPulse{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+
+/* INVITATION */
+.invitation{background:white;border-bottom:1px solid var(--rule);}
+.invitation-inner{max-width:960px;margin:0 auto;padding:5rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+@media(max-width:720px){.invitation-inner{grid-template-columns:1fr;gap:2.5rem;}}
+.inv-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.25em;color:var(--blue-light);text-transform:uppercase;margin-bottom:1rem;}
+.inv-title{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,4vw,3rem);font-weight:700;color:var(--blue);line-height:1.15;margin-bottom:1.5rem;}
+.inv-title em{color:var(--gold-dim);font-style:italic;}
+.inv-body{font-size:1.05rem;color:var(--muted);line-height:1.8;margin-bottom:1.2rem;}
+.inv-body strong{color:var(--ink);font-weight:600;}
+.event-card{background:var(--blue);padding:2rem;margin-bottom:1.25rem;border-left:3px solid var(--gold);}
+.event-card-label{font-family:'IBM Plex Mono',monospace;font-size:.75rem;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:.5rem;}
+.event-card-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--cream);margin-bottom:.75rem;line-height:1.2;}
+.event-card-detail{font-size:1rem;color:rgba(253,248,243,.7);line-height:1.9;}
+.event-card-detail strong{color:var(--cream);font-weight:600;}
+.btn-row{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2rem;}
+.btn{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:.9rem 2rem;transition:all .2s;cursor:pointer;border:none;}
+.btn-gold{background:var(--gold);color:var(--blue);}
+.btn-gold:hover{background:#FFD166;transform:translateY(-2px);}
+.btn-outline{background:transparent;border:1.5px solid var(--blue);color:var(--blue);}
+.btn-outline:hover{background:var(--blue);color:var(--cream);}
+
+/* SECTIONS */
+.section{max-width:1040px;margin:0 auto;padding:5rem 2rem;}
+.section-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.75rem;letter-spacing:.28em;text-transform:uppercase;color:var(--blue-light);text-align:center;margin-bottom:.75rem;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.4rem);color:var(--blue);text-align:center;font-weight:700;line-height:1.15;margin-bottom:.6rem;}
+.section-title em{font-style:italic;color:var(--gold-dim);}
+.section-intro{text-align:center;font-size:1rem;color:var(--muted);margin-bottom:3.5rem;font-family:'Playfair Display',serif;font-style:italic;}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);}
+.stat-card{background:white;padding:2rem 1.75rem;position:relative;transition:background .2s;}
+.stat-card:hover{background:var(--blue-pale);}
+.stat-card.dark{background:var(--blue);}
+.stat-card.dark:hover{background:var(--blue-mid);}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .3s;transform-origin:left;}
+.stat-card:hover::before,.stat-card.dark::before{transform:scaleX(1);}
+.stat-num{font-family:'IBM Plex Mono',monospace;font-size:clamp(2.2rem,4vw,3rem);font-weight:700;color:var(--blue);line-height:1;margin-bottom:.5rem;}
+.stat-card.dark .stat-num{color:var(--gold);}
+.stat-unit{font-size:.42em;font-weight:400;color:var(--gold-dim);vertical-align:super;}
+.stat-label{font-size:1rem;font-weight:600;color:var(--ink);margin-bottom:.4rem;}
+.stat-card.dark .stat-label{color:var(--cream);}
+.stat-note{font-size:.82rem;color:var(--muted);line-height:1.5;}
+.stat-card.dark .stat-note{color:rgba(253,248,243,.55);}
+
+/* COURSES */
+.course-section{background:var(--blue);padding:5rem 2rem;}
+.course-table{max-width:900px;margin:0 auto;}
+.course-group{opacity:0;transform:translateX(-16px);transition:opacity .5s,transform .5s;padding:1.6rem 0;border-bottom:1px solid rgba(255,255,255,.07);}
+.course-group.visible{opacity:1;transform:translateX(0);}
+.course-group:last-child{border-bottom:none;}
+.course-group-inner{display:grid;grid-template-columns:90px 1fr 70px;align-items:start;gap:1.5rem;}
+.course-sem{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;line-height:1.5;padding-top:.2rem;}
+.course-name{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--cream);margin-bottom:.35rem;}
+.course-ann{font-size:.88rem;color:rgba(253,248,243,.5);line-height:1.6;margin-bottom:.9rem;}
+.course-ann:last-child{margin-bottom:0;}
+.course-grade{font-family:'IBM Plex Mono',monospace;font-size:1.2rem;font-weight:700;text-align:right;padding-top:.2rem;}
+.grade-a{color:var(--gold)}.grade-b{color:#7EB8D4}.grade-c{color:#A8BCC8}.grade-d{color:#6B8899}
+.grade-ip{color:rgba(253,248,243,.35);font-size:.75rem;letter-spacing:.08em;}
+
+/* TECH STACK */
+.stack-section{background:var(--ink);padding:5rem 2rem;}
+.stack-inner{max-width:1040px;margin:0 auto;}
+.stack-category{margin-bottom:3.5rem;}
+.stack-category:last-child{margin-bottom:0;}
+.stack-cat-label{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;}
+.stack-cat-label::after{content:'';flex:1;height:1px;background:rgba(253,181,21,.15);}
+.stack-grid{display:flex;flex-wrap:wrap;gap:1rem;}
+.stack-item{display:flex;flex-direction:column;align-items:center;gap:.6rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:1.25rem 1.5rem;min-width:90px;transition:background .2s,border-color .2s,transform .2s;cursor:default;}
+.stack-item:hover{background:rgba(253,181,21,.07);border-color:rgba(253,181,21,.3);transform:translateY(-3px);}
+.stack-item i{font-size:2.2rem;line-height:1;}
+.stack-item .stack-name{font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.1em;color:rgba(253,248,243,.5);text-transform:uppercase;white-space:nowrap;}
+
+/* COMMITS */
+.commits-section{background:white;padding:5rem 2rem;border-top:1px solid var(--rule);}
+.commits-bars{display:flex;align-items:flex-end;justify-content:center;gap:3rem;height:160px;margin:2.5rem auto 1rem;max-width:520px;}
+.commit-col{display:flex;flex-direction:column;align-items:center;gap:.6rem;flex:1;}
+.commit-bar{width:100%;background:var(--blue);border-radius:2px 2px 0 0;height:0;transition:height 1.2s cubic-bezier(.4,0,.2,1);position:relative;}
+.commit-bar.gold{background:var(--gold);}
+.commit-bar::after{content:attr(data-val);position:absolute;top:-2rem;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:700;color:var(--blue);white-space:nowrap;}
+.commit-bar.gold::after{color:var(--gold-dim);}
+.commit-label{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--muted);letter-spacing:.1em;text-align:center;}
+.commit-total{text-align:center;font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--muted);font-style:italic;margin-top:1.5rem;}
+.commit-total strong{font-family:'IBM Plex Mono',monospace;color:var(--blue);font-style:normal;font-size:1.4rem;}
+
+/* TIMELINE */
+.timeline-section{background:var(--cream);padding:5rem 2rem;}
+.brush-hint{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.12em;color:var(--muted);text-align:center;margin-bottom:2rem;text-transform:uppercase;}
+
+/* FORCE */
+.force-section{background:var(--blue);padding:5rem 2rem;}
+#force-svg{width:100%;display:block;cursor:grab;}
+#force-svg:active{cursor:grabbing;}
+
+/* PAYMENT */
+.tips-section{background:var(--gold-pale);border-top:1px solid rgba(253,181,21,.3);padding:4rem 2rem;}
+.tips-inner{max-width:700px;margin:0 auto;text-align:center;}
+.tips-inner h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);color:var(--blue);font-weight:700;margin-bottom:.75rem;}
+.tips-inner p{font-size:1rem;color:var(--muted);line-height:1.8;margin-bottom:2rem;}
+.payment-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;}
+.payment-card{background:white;border:1px solid rgba(0,50,98,.12);padding:1.25rem 1.75rem;text-align:center;min-width:150px;flex:1;}
+.payment-icon{font-size:1.4rem;display:block;margin-bottom:.4rem;}
+.payment-platform{font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.15em;color:var(--blue-light);text-transform:uppercase;margin-bottom:.3rem;}
+.payment-handle{font-family:'IBM Plex Mono',monospace;font-size:.95rem;font-weight:700;color:var(--blue);}
+.tips-disclaimer{margin-top:1.5rem;font-size:.85rem;color:var(--muted);font-style:italic;font-family:'Playfair Display',serif;}
+
+/* FOOTER */
+footer{background:var(--ink);padding:2.5rem 2rem;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.12em;color:rgba(253,248,243,.2);line-height:2.5;}
+footer a{color:rgba(253,181,21,.4);text-decoration:none;}
+footer a:hover{color:var(--gold);}
+footer span{color:var(--gold);opacity:.5;}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">UC Berkeley · School of Information · MIDS 2026</div>
+    <h1 class="hero-title">
+      <span class="block">What Actually</span>
+      <span class="block gold">Happened.</span>
+    </h1>
+    <p class="hero-sub">A data-backed, empirically verified, statistically significant account of one man's journey through the Master of Information &amp; Data Science program. You are cordially invited to witness the conclusion.</p>
+    <p class="hero-meta">
+      MIKEL CALDERON &middot; MIDS CLASS OF 2026<br>
+      HEARST GREEK THEATRE &middot; MAY 19, 2026 &middot; 7:00 PM PDT<br>
+      YOU ARE CORDIALLY INVITED<br>
+      <span class="hero-links">
+        <a href="https://github.com/mikelcal" target="_blank">&#x2665; GITHUB</a>
+        <span style="opacity:.3;">&middot;</span>
+        <a href="https://www.linkedin.com/in/mikelcal/" target="_blank">in LINKEDIN</a>
+      </span>
+    </p>
+  </div>
+  <div class="hero-scroll">scroll
+    <svg width="12" height="16" viewBox="0 0 12 16" fill="none"><path d="M6 0v14M1 9l5 5 5-5" stroke="#FDB515" stroke-width="1.5"/></svg>
+  </div>
+</section>
+
+<!-- INVITATION -->
+<section class="invitation">
+  <div class="invitation-inner">
+    <div class="reveal">
+      <p class="inv-eyebrow">You're Invited</p>
+      <h2 class="inv-title">Come Watch Me <em>Walk.</em></h2>
+      <p class="inv-body">After two years, twelve courses, thirty-one books, and one capstone that genuinely slaps &mdash; I'm earning my <strong>Master of Information &amp; Data Science</strong> from UC Berkeley this May.</p>
+      <p class="inv-body">I would love to have you there in person. The ceremony is at the <strong>Hearst Greek Theatre</strong> &mdash; an outdoor amphitheater on campus. Bring a jacket. It'll be worth it.</p>
+      <p class="inv-body">Commencement features a keynote by <strong>Robert Reich</strong> &mdash; former U.S. Secretary of Labor and a genuine Berkeley legend. Worth the trip on its own.</p>
+      <div class="btn-row">
+        <a href="https://secure-tickets.berkeley.edu/31210" target="_blank" class="btn btn-gold">Get Tickets &mdash; $15</a>
+        <a href="guestbook.html" class="btn btn-outline">Sign the Guestbook &#10024;</a>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="event-card">
+        <div class="event-card-label">&#127891; I School Ceremony</div>
+        <div class="event-card-title">Hearst Greek Theatre</div>
+        <div class="event-card-detail">
+          <strong>Tuesday, May 19, 2026</strong><br>
+          Ceremony: <strong>7:00 PM PDT</strong><br>
+          Graduates arrive: 5:30 PM<br>
+          UC Berkeley Campus<br><br>
+          Tickets: <strong>$15</strong> &mdash; tickets.berkeley.edu<br>
+          Phone: (510) 642-9988<br>
+          In person: Zellerbach Hall box office<br>
+          Kids 10 &amp; under: <strong>Free</strong> (box office day-of)<br>
+          <span style="color:rgba(253,248,243,.5);font-size:.8rem;">Tickets by email only. No will call.</span><br>
+          <a href="https://www.ischool.berkeley.edu/events/2026/commencement" target="_blank" style="color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-decoration:none;opacity:.8;">Full ceremony details &rarr;</a>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-card-label">&#127891; Spring Commencement</div>
+        <div class="event-card-title">California Memorial Stadium</div>
+        <div class="event-card-detail">
+          <strong>Saturday, May 16, 2026</strong><br>
+          Ceremony: <strong>10:30 AM PDT</strong><br>
+          UC Berkeley Campus<br><br>
+          Keynote: <strong>Robert Reich</strong><br>
+          Former U.S. Secretary of Labor<br>
+          <span style="color:rgba(253,248,243,.5);font-size:.8rem;">Livestream: commencement.berkeley.edu</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section style="background:var(--cream);">
+  <div class="section">
+    <p class="section-eyebrow">Empirical Evidence</p>
+    <h2 class="section-title">The <em>Receipts</em></h2>
+    <p class="section-intro">Verified data. Rigorous methodology. Roughly.</p>
+    <div class="stats-grid reveal">
+      <div class="stat-card"><div class="stat-num counting" data-target="12">0</div><div class="stat-label">Courses Completed</div><div class="stat-note">Across 5 semesters. One of them twice.</div></div>
+      <div class="stat-card"><div class="stat-num counting" data-target="252">0<span class="stat-unit">hrs</span></div><div class="stat-label">Live Zoom Hours</div><div class="stat-note">Camera on. Coffee mandatory. 1.5hrs &times; 14 weeks &times; 12 courses.</div></div>
+      <div class="stat-card"><div class="stat-num counting" data-target="420">0<span class="stat-unit">hrs</span></div><div class="stat-label">Async Video &amp; Reading</div><div class="stat-note">Watched. Actually watched. Most of them.</div></div>
+      <div class="stat-card dark"><div class="stat-num counting" data-target="1800">0<span class="stat-unit">+hrs</span></div><div class="stat-label">Total Hours Invested</div><div class="stat-note">&plusmn;200hrs. Methodology: regression + vibes.</div></div>
+      <div class="stat-card"><div class="stat-num counting" data-target="399">0</div><div class="stat-label">GitHub Contributions</div><div class="stat-note">34 &rarr; 69 &rarr; 296. A hockey stick. And counting.</div></div>
+      <div class="stat-card"><div class="stat-num">78<span class="stat-unit">%</span></div><div class="stat-label">Assignment Completion Rate</div><div class="stat-note">The other 22% are a conversation for another day.</div></div>
+      <div class="stat-card dark"><div class="stat-num">11:59<span class="stat-unit">pm</span></div><div class="stat-label">Preferred Submission Time</div><div class="stat-note">A precise, deliberate strategy. Probably.</div></div>
+      <div class="stat-card"><div class="stat-num counting" data-target="31">0</div><div class="stat-label">Books Purchased</div><div class="stat-note">~37% completion rate. One purchased twice. We move.</div></div>
+      <div class="stat-card"><div class="stat-num counting" data-target="229">0<span class="stat-unit">mg</span></div><div class="stat-label">Daily Caffeine</div><div class="stat-note">Coke minis, Red Bulls, Celsius. A diversified portfolio.</div></div>
+      <div class="stat-card dark"><div class="stat-num counting" data-target="6">0<span class="stat-unit">hrs</span></div><div class="stat-label">Debugging a Typo</div><div class="stat-note">It was a semicolon. We don't discuss this.</div></div>
+      <div class="stat-card"><div class="stat-num">6&ndash;7</div><div class="stat-label">LaTeX Rage Incidents</div><div class="stat-note">Fits of uncontrollable, completely justified anger.</div></div>
+      <div class="stat-card"><div class="stat-num counting" data-target="47">0</div><div class="stat-label">"You're Still On Mute"</div><div class="stat-note">Every. Single. Time.</div></div>
+      <div class="stat-card dark"><div class="stat-num counting" data-target="45">0</div><div class="stat-label">Team Syncs Survived</div><div class="stat-note">Group projects. Check-ins. The works.</div></div>
+      <div class="stat-card"><div class="stat-num">40<span class="stat-unit">+</span></div><div class="stat-label">Tabs Open Right Now</div><div class="stat-note">Don't touch that. I'm gonna need it later.</div></div>
+      <div class="stat-card"><div class="stat-num">&infin;</div><div class="stat-label">Hours Formatting R Figures</div><div class="stat-note">More than I care to count. The axes were never right.</div></div>
+      <div class="stat-card dark"><div class="stat-num">&ge;1</div><div class="stat-label">Luna Keyboard Incidents</div><div class="stat-note">At least 1. We don't talk about it.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section class="course-section">
+  <div style="max-width:1040px;margin:0 auto;">
+    <p class="section-eyebrow" style="color:var(--gold)">The Curriculum</p>
+    <h2 class="section-title" style="color:var(--cream)">Every Course. <em>Every Grade.</em></h2>
+    <p class="section-intro" style="color:rgba(253,248,243,.45)">Full transparency. No redactions.</p>
+    <div class="course-table" id="courseTable">
+
+      <div class="course-group"><div class="course-group-inner">
+        <span class="course-sem">Summer<br>2024</span>
+        <div>
+          <div class="course-name">Introduction to Data Science Programming</div><div class="course-ann">Practical. Foundational. Exactly what it should be.</div>
+          <div class="course-name">Research Design &amp; Applications</div><div class="course-ann">A clean start. Two A's. The confidence was real.</div>
+        </div>
+        <div style="text-align:right;"><div class="course-grade grade-a" style="margin-bottom:2.1rem;">A</div><div class="course-grade grade-a"><span style="font-size:.85em;">A</span><sup style="font-size:.55em;vertical-align:super;">+</sup></div></div>
+      </div></div>
+
+      <div class="course-group"><div class="course-group-inner">
+        <span class="course-sem">Fall<br>2024</span>
+        <div>
+          <div class="course-name">Statistics for Data Science</div><div class="course-ann">The hard semester. Enough said. We keep going.</div>
+          <div class="course-name">Fundamentals of Data Engineering</div><div class="course-ann">Held it together. B+.</div>
+        </div>
+        <div style="text-align:right;"><div class="course-grade grade-d" style="margin-bottom:2.1rem;">D</div><div class="course-grade grade-b"><span style="font-size:.85em;">B</span><sup style="font-size:.55em;vertical-align:super;">+</sup></div></div>
+      </div></div>
+
+      <div class="course-group"><div class="course-group-inner">
+        <span class="course-sem">Spring<br>2025</span>
+        <div>
+          <div class="course-name">Statistics for Data Science <span style="color:rgba(253,248,243,.3);font-size:.85rem;">(retake)</span></div><div class="course-ann">Stared down the same 14 weeks of FOAS. Loved R. Earned it.</div>
+          <div class="course-name">Data Visualization</div><div class="course-ann">Built something real. Still live at mikelcal.co. Gas.</div>
+        </div>
+        <div style="text-align:right;"><div class="course-grade grade-c" style="margin-bottom:2.1rem;"><span style="font-size:.85em;">C</span><sup style="font-size:.55em;vertical-align:super;">+</sup></div><div class="course-grade grade-b">B</div></div>
+      </div></div>
+
+      <div class="course-group"><div class="course-group-inner">
+        <span class="course-sem">Summer<br>2025</span>
+        <div><div class="course-name">Applied Machine Learning</div><div class="course-ann">Redemption arc: unlocked. This is what it was always supposed to feel like.</div></div>
+        <div style="text-align:right;"><div class="course-grade grade-a">A</div></div>
+      </div></div>
+
+      <div class="course-group"><div class="course-group-inner">
+        <span class="course-sem">Fall<br>2025</span>
+        <div>
+          <div class="course-name">Behind the Data: Humans &amp; Values</div><div class="course-ann">Bias frameworks, harm auditing, right to know. Brain: thoroughly tickled.</div>
+          <div class="course-name">Experiments &amp; Causal Inference</div><div class="course-ann">Watched everything. Missed some HW. The C does not tell the full story.</div>
+        </div>
+        <div style="text-align:right;"><div class="course-grade grade-a" style="margin-bottom:2.1rem;"><span style="font-size:.85em;">A</span><sup style="font-size:.55em;vertical-align:super;">&minus;</sup></div><div class="course-grade grade-c">C</div></div>
+      </div></div>
+
+      <div class="course-group"><div class="course-group-inner">
+        <span class="course-sem">Spring<br>2026</span>
+        <div>
+          <div class="course-name">Machine Learning at Scale</div><div class="course-ann">PySpark. Databricks. The final boss. Currently surviving.</div>
+          <div class="course-name">Capstone &mdash; Undercurrent</div><div class="course-ann">Global cultural intelligence. 10 countries. 6 languages. Went live March 8, 2026.</div>
+        </div>
+        <div style="text-align:right;"><div class="course-grade grade-ip" style="margin-bottom:2.4rem;">IN PROG</div><div class="course-grade grade-ip">IN PROG</div></div>
+      </div></div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="stack-section">
+  <div class="stack-inner">
+    <p class="section-eyebrow" style="color:var(--gold);text-align:left;margin-bottom:.5rem;">Built With</p>
+    <h2 class="section-title" style="color:var(--cream);text-align:left;margin-bottom:.4rem;">The <em>Tech Stack</em></h2>
+    <p class="section-intro" style="color:rgba(253,248,243,.4);text-align:left;margin-bottom:3.5rem;">Two years of tools, languages, and frameworks. Every one earned.</p>
+
+    <div class="stack-category reveal">
+      <div class="stack-cat-label">Infrastructure &amp; Services</div>
+      <div class="stack-grid">
+        <div class="stack-item"><i class="devicon-amazonwebservices-plain-wordmark" style="color:#FF9900;font-size:2.4rem;"></i><span class="stack-name">AWS</span></div>
+        <div class="stack-item"><i class="devicon-googlecloud-plain colored" style="color:#4285F4;"></i><span class="stack-name">GCP</span></div>
+        <div class="stack-item"><i class="devicon-apachespark-original" style="color:#E25A1C;"></i><span class="stack-name">Databricks</span></div>
+        <div class="stack-item"><i class="devicon-flask-original" style="color:rgba(253,248,243,.7);"></i><span class="stack-name">Flask</span></div>
+        <div class="stack-item"><i class="devicon-fastapi-plain colored" style="color:#009688;"></i><span class="stack-name">FastAPI</span></div>
+        <div class="stack-item"><i class="devicon-postgresql-plain colored" style="color:#336791;"></i><span class="stack-name">Postgres</span></div>
+        <div class="stack-item"><i class="devicon-docker-plain colored" style="color:#2496ED;"></i><span class="stack-name">Docker</span></div>
+        <div class="stack-item"><i class="devicon-redis-plain colored" style="color:#DC382D;"></i><span class="stack-name">Redis</span></div>
+        <div class="stack-item"><i class="devicon-neo4j-plain colored" style="color:#008CC1;"></i><span class="stack-name">Neo4j</span></div>
+      </div>
+    </div>
+
+    <div class="stack-category reveal">
+      <div class="stack-cat-label">Languages</div>
+      <div class="stack-grid">
+        <div class="stack-item"><i class="devicon-python-plain colored" style="color:#3776AB;"></i><span class="stack-name">Python</span></div>
+        <div class="stack-item"><i class="devicon-r-plain colored" style="color:#276DC3;"></i><span class="stack-name">R</span></div>
+        <div class="stack-item"><i class="devicon-javascript-plain colored" style="color:#F7DF1E;"></i><span class="stack-name">JavaScript</span></div>
+        <div class="stack-item"><i class="devicon-html5-plain colored" style="color:#E34F26;"></i><span class="stack-name">HTML <span style="font-size:.7em;opacity:.5;">(fite me)</span></span></div>
+      </div>
+    </div>
+
+    <div class="stack-category reveal">
+      <div class="stack-cat-label">Frameworks &amp; Visualization</div>
+      <div class="stack-grid">
+        <div class="stack-item"><i class="devicon-d3js-plain colored" style="color:#F9A03C;"></i><span class="stack-name">D3.js</span></div>
+        <div class="stack-item">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="none" stroke="#4C8CBF" stroke-width="2"/><path d="M8 26 L18 8 L28 26" stroke="#4C8CBF" stroke-width="2.5" fill="none" stroke-linejoin="round"/><circle cx="18" cy="8" r="2.5" fill="#4C8CBF"/></svg>
+          <span class="stack-name">Altair</span>
+        </div>
+        <div class="stack-item"><i class="devicon-apachespark-original colored" style="color:#E25A1C;"></i><span class="stack-name">PySpark</span></div>
+        <div class="stack-item"><i class="devicon-pandas-original colored" style="color:#150458;background:white;padding:2px;border-radius:3px;"></i><span class="stack-name">Pandas</span></div>
+        <div class="stack-item"><i class="devicon-scikitlearn-plain colored" style="color:#F7931E;"></i><span class="stack-name">scikit-learn</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMITS -->
+<section class="commits-section reveal">
+  <div style="max-width:600px;margin:0 auto;text-align:center;">
+    <p class="section-eyebrow">GitHub Activity</p>
+    <h2 class="section-title">The <em>Hockey Stick</em></h2>
+    <p class="section-intro">Contributions across the program. Year over year. Make it make sense.</p>
+    <div class="commits-bars" id="commitBars">
+      <div class="commit-col"><div class="commit-bar" data-val="34" data-height="34"></div><div class="commit-label">2024</div></div>
+      <div class="commit-col"><div class="commit-bar" data-val="69" data-height="69"></div><div class="commit-label">2025 &mdash; nice</div></div>
+      <div class="commit-col"><div class="commit-bar gold" data-val="296+" data-height="148"></div><div class="commit-label">2026 &#128293;</div></div>
+    </div>
+    <p class="commit-total"><strong>399</strong> total contributions &middot; and counting</p>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline-section">
+  <div class="section" style="padding-bottom:2rem;">
+    <p class="section-eyebrow">The Journey</p>
+    <h2 class="section-title">A <em>Brushable</em> Timeline</h2>
+    <p class="section-intro">Drag the bottom bar to zoom into any semester. Hover events for details.</p>
+    <p class="brush-hint">&larr; drag context bar to zoom &middot; hover dots for details &rarr;</p>
+  </div>
+  <div id="timeline-wrap" style="max-width:1140px;margin:0 auto;padding:0 1.5rem 4rem;">
+    <svg id="timeline-svg"></svg>
+  </div>
+</section>
+
+<!-- FORCE -->
+<section class="force-section">
+  <div style="max-width:1140px;margin:0 auto;text-align:center;padding-bottom:2rem;">
+    <p class="section-eyebrow" style="color:var(--gold)">Neural Architecture</p>
+    <h2 class="section-title" style="color:var(--cream)">The <em>Force-Directed</em> Brain</h2>
+    <p class="section-intro" style="color:rgba(253,248,243,.45)">Every concept, tool, and vibe from the last two years. Drag nodes around.</p>
+  </div>
+  <div id="force-wrap" style="max-width:1140px;margin:0 auto;padding:0 1.5rem;">
+    <svg id="force-svg" height="760"></svg>
+  </div>
+</section>
+
+<!-- LIBRARY -->
+<section style="background:var(--cream);padding:5rem 2rem;">
+  <div class="section" style="padding:0;">
+    <p class="section-eyebrow">The Amazon Haul</p>
+    <h2 class="section-title">The <em>Library</em></h2>
+    <p class="section-intro">31 books. ~37% completion rate. Every one purchased with intention.<br>
+    <span style="font-size:.85rem;">Affiliate links &mdash; buying through these supports the student loan retirement fund. &#128591;</span></p>
+
+    <div class="lib-category reveal">
+      <div class="lib-cat-label">&#128202; Data Science &amp; Statistics</div>
+      <div class="lib-grid" id="lib-grid-stats"></div>
+    </div>
+    <div class="lib-category reveal">
+      <div class="lib-cat-label">&#129302; Machine Learning &amp; AI</div>
+      <div class="lib-grid" id="lib-grid-ml"></div>
+    </div>
+    <div class="lib-category reveal">
+      <div class="lib-cat-label">&#9889; Spark &amp; Data Engineering</div>
+      <div class="lib-grid" id="lib-grid-spark"></div>
+    </div>
+    <div class="lib-category reveal">
+      <div class="lib-cat-label">&#128202; Data Visualization</div>
+      <div class="lib-grid" id="lib-grid-viz"></div>
+    </div>
+    <div class="lib-category reveal">
+      <div class="lib-cat-label">&#128200; Causal Inference &amp; Experiments</div>
+      <div class="lib-grid" id="lib-grid-causal"></div>
+    </div>
+    <div class="lib-category reveal">
+      <div class="lib-cat-label">&#128209; Databases &amp; Information Retrieval</div>
+      <div class="lib-grid" id="lib-grid-db"></div>
+    </div>
+    <div class="lib-category reveal">
+      <div class="lib-cat-label">&#128149; The Parallel Curriculum</div>
+      <div class="lib-grid" id="lib-grid-personal"></div>
+    </div>
+
+    <p style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.1em;margin-top:3rem;">
+      Amazon affiliate links &middot; tag: mikelcal-20 &middot; covers via Open Library &middot; purchases support the student loan retirement fund
+    </p>
+  </div>
+</section>
+
+<style>
+.lib-category{margin-bottom:3.5rem;}
+.lib-category:last-of-type{margin-bottom:0;}
+.lib-cat-label{
+  font-family:'IBM Plex Mono',monospace;font-size:.75rem;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:var(--blue);margin-bottom:1.25rem;
+  display:flex;align-items:center;gap:1rem;
+}
+.lib-cat-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.lib-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:1rem;
+}
+.lib-item{
+  display:flex;flex-direction:column;
+  text-decoration:none;
+  background:white;border:1px solid var(--rule);
+  border-top:2px solid transparent;
+  overflow:hidden;
+  transition:border-color .2s,box-shadow .2s,transform .2s;
+}
+.lib-item:hover{
+  border-top-color:var(--gold);
+  box-shadow:0 6px 24px rgba(0,50,98,.1);
+  transform:translateY(-3px);
+}
+.lib-cover{
+  width:100%;aspect-ratio:2/3;
+  object-fit:cover;display:block;
+  background:var(--blue-pale);
+}
+.lib-cover-placeholder{
+  width:100%;aspect-ratio:2/3;
+  background:linear-gradient(135deg,var(--blue) 0%,var(--blue-mid) 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:1rem;text-align:center;
+}
+.lib-cover-placeholder .ph-title{
+  font-family:'Playfair Display',serif;font-size:.8rem;font-weight:700;
+  color:var(--cream);line-height:1.3;margin-bottom:.5rem;
+}
+.lib-cover-placeholder .ph-line{
+  width:30px;height:2px;background:var(--gold);margin:0 auto .5rem;
+}
+.lib-cover-placeholder .ph-author{
+  font-family:'IBM Plex Mono',monospace;font-size:.6rem;
+  color:rgba(253,248,243,.5);letter-spacing:.05em;
+}
+.lib-info{padding:.75rem .875rem 1rem;flex:1;display:flex;flex-direction:column;}
+.lib-title{
+  font-family:'Playfair Display',serif;
+  font-size:.9rem;font-weight:700;
+  color:var(--ink);margin-bottom:.3rem;line-height:1.35;flex:1;
+}
+.lib-item:hover .lib-title{color:var(--blue);}
+.lib-meta{
+  font-size:.75rem;color:var(--muted);
+  font-style:italic;line-height:1.4;margin-bottom:.3rem;
+}
+.lib-note{
+  font-size:.7rem;color:var(--gold-dim);
+  font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;
+}
+</style>
+
+<script>
+(function(){
+  var COVERS = 'https://covers.openlibrary.org/b/isbn/';
+  var TAG = 'mikelcal-20';
+
+  var books = {
+    'lib-grid-stats': [
+      {isbn:'9781492072942',asin:'149207294X',title:'Practical Statistics for Data Scientists',author:'Bruce & Bruce'},
+      {isbn:'9780578973838',asin:'0578973839',title:'Ace the Data Science Interview',author:'Singh & Huo'},
+      {isbn:'9781803247762',asin:'1803247762',title:'50 Algorithms Every Programmer Should Know',author:'Imran Ahmad'},
+      {isbn:'9780578156781',asin:'0578973839',title:'Foundations of Agnostic Statistics',author:'Aronow & Miller',note:'Read twice. Involuntarily.'},
+      {isbn:'9780521865715',asin:'0521865719',title:'Elementary Probability for Applications',author:'Rick Durrett'},
+      {isbn:'9783030551551',asin:'3030551555',title:'Modern Mathematical Statistics with Applications',author:'Devore & Berk'},
+    ],
+    'lib-grid-ml': [
+      {isbn:'9781617296864',asin:'1617296864',title:'Deep Learning with Python, 2nd Ed.',author:'François Chollet'},
+      {isbn:'9781098125974',asin:'1098125975',title:'Hands-On Machine Learning with Scikit-Learn, Keras & TF',author:'Aurélien Géron',note:'The bible.'},
+      {isbn:'9783031387463',asin:'3031387465',title:'Statistical Learning with Python',author:'James et al.'},
+    ],
+    'lib-grid-spark': [
+      {isbn:'9781492076988',asin:'1492076988',title:'Spark: The Definitive Guide',author:'Chambers & Zaharia',note:'Essential.'},
+      {isbn:'9781449358655',asin:'1449358659',title:'High Performance Spark, 2nd Ed.',author:'Karau & Warren',note:'Yes, bought both.'},
+      {isbn:'9781491943205',asin:'1491943203',title:'High Performance Spark, 1st Ed.',author:'Karau & Warren',note:'See above.'},
+      {isbn:'9781492043089',asin:'1492043087',title:'Kafka: The Definitive Guide',author:'Shapira et al.'},
+      {isbn:'9781449305048',asin:'1449305040',title:'Redis Cookbook',author:'Macedo & Oliveira'},
+      {isbn:'9781492087915',asin:'1492087912',title:'Data Science at the Command Line',author:'Jeroen Janssens'},
+      {isbn:'9781449358655',asin:'1449358659',title:'Doing Data Science',author:'Schutt & O\'Neil'},
+    ],
+    'lib-grid-viz': [
+      {isbn:'9781466508910',asin:'1466508914',title:'Visualization Analysis and Design',author:'Tamara Munzner',note:'Bought print AND Kindle.'},
+    ],
+    'lib-grid-causal': [
+      {isbn:'9780691152844',asin:'0691152845',title:"Mastering 'Metrics",author:'Angrist & Pischke',note:'Read cover to cover.'},
+      {isbn:'9780262542272',asin:'0262542277',title:'The Power of Experiments',author:'Luca & Bazerman'},
+      {isbn:'9780393979954',asin:'0393979954',title:'Field Experiments',author:'Gerber & Green'},
+    ],
+    'lib-grid-db': [
+      {isbn:'9781491930892',asin:'1491930896',title:'Graph Databases',author:'Robinson, Webber & Eifrem'},
+      {isbn:'9781492047681',asin:'1492047686',title:'Graph Algorithms',author:'Needham & Hodler'},
+      {isbn:'9780521865715',asin:'0521865719',title:'Introduction to Information Retrieval',author:'Manning et al.'},
+      {isbn:'9781935504702',asin:'1935504703',title:'Data Modeling for MongoDB',author:'Steve Hoberman'},
+      {isbn:'9780977140060',asin:'0977140067',title:'Data Modeling Made Simple',author:'Steve Hoberman'},
+      {isbn:'9780124114616',asin:'012411461X',title:'Business Intelligence Guidebook',author:'Rick Sherman'},
+      {isbn:'9781449495756',asin:'1449495753',title:'Data Cleaning',author:'Ilyas & Chu'},
+      {isbn:'9781098158439',asin:'1098158431',title:'NGINX Cookbook',author:'Derek DeJonghe'},
+    ],
+    'lib-grid-personal': [
+      {isbn:'9781524874834',asin:'1524874833',title:'The Way Forward',author:'Yung Pueblo'},
+      {isbn:'9781524860486',asin:'1524860484',title:'Clarity & Connection',author:'Yung Pueblo'},
+      {isbn:'9781449495756',asin:'1449495753',title:'Inward',author:'Yung Pueblo',note:'The trilogy.'},
+      {isbn:'9780593582275',asin:'0593582276',title:'How to Love Better',author:'Yung Pueblo',note:'Read cover to cover.'},
+      {isbn:'9780593796207',asin:'0593796209',title:"Not Sure Who Needs to Hear This, But...",author:'Humble the Poet'},
+      {isbn:'9780593541388',asin:'0593541383',title:'New Happy',author:'Stephanie Harrison',note:'Read cover to cover.'},
+      {isbn:'9780979356407',asin:'0979356407',title:'Living SMART',author:'Carson & Langer'},
+      {isbn:'9781400248872',asin:'1400248876',title:'Building a StoryBrand 2.0',author:'Donald Miller'},
+    ],
+  };
+
+  function makeCoverUrl(isbn, size) {
+    return COVERS + isbn + '-' + (size||'M') + '.jpg';
+  }
+
+  function buildCard(book) {
+    var url = 'https://www.amazon.com/dp/' + book.asin + '?tag=' + TAG;
+    var a = document.createElement('a');
+    a.href = url; a.target = '_blank'; a.className = 'lib-item';
+
+    // Cover image with fallback placeholder
+    var img = document.createElement('img');
+    img.className = 'lib-cover';
+    img.alt = book.title;
+    img.loading = 'lazy';
+
+    var placeholder = document.createElement('div');
+    placeholder.className = 'lib-cover-placeholder';
+    placeholder.innerHTML =
+      '<div class="ph-title">' + book.title + '</div>' +
+      '<div class="ph-line"></div>' +
+      '<div class="ph-author">' + book.author + '</div>';
+
+    // Try Open Library cover; fallback to placeholder on error
+    img.onload = function() {
+      // OL returns a 1x1 gif for missing covers — detect it
+      var tmp = document.createElement('canvas');
+      tmp.width = 1; tmp.height = 1;
+      var tmpCtx = tmp.getContext('2d');
+      try {
+        tmpCtx.drawImage(img, 0, 0, 1, 1);
+        var px = tmpCtx.getImageData(0,0,1,1).data;
+        // If pixel is nearly white/transparent it's the blank gif
+        if(px[3] < 10 || (px[0]>240 && px[1]>240 && px[2]>240 && px[3]>240)) {
+          img.style.display='none';
+          a.insertBefore(placeholder, a.firstChild);
+        }
+      } catch(e) { /* cross-origin canvas taint — just show img */ }
+    };
+    img.onerror = function() {
+      img.style.display='none';
+      a.insertBefore(placeholder, a.firstChild);
+    };
+    img.src = makeCoverUrl(book.isbn, 'M');
+    a.appendChild(img);
+
+    var info = document.createElement('div');
+    info.className = 'lib-info';
+
+    var title = document.createElement('div');
+    title.className = 'lib-title';
+    title.textContent = book.title;
+    info.appendChild(title);
+
+    var meta = document.createElement('div');
+    meta.className = 'lib-meta';
+    meta.textContent = book.author;
+    info.appendChild(meta);
+
+    if(book.note) {
+      var note = document.createElement('div');
+      note.className = 'lib-note';
+      note.textContent = book.note;
+      info.appendChild(note);
+    }
+
+    a.appendChild(info);
+    return a;
+  }
+
+  Object.keys(books).forEach(function(gridId) {
+    var grid = document.getElementById(gridId);
+    if(!grid) return;
+    books[gridId].forEach(function(book) {
+      grid.appendChild(buildCard(book));
+    });
+  });
+})();
+</script>
+
+<!-- PAYMENT -->
+<section class="tips-section">
+  <div class="tips-inner reveal">
+    <p style="font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.25em;color:var(--blue-light);text-transform:uppercase;margin-bottom:.75rem;">Completely Optional</p>
+    <h2>Help Retire the<br>Student Loans &#127891;&#128184;</h2>
+    <p>Attendance is the real gift. But if you're feeling generous and want to contribute to the "Mikel Finally Has A Master's Degree And Also Some Debt" fund &mdash; no judgment here, only gratitude.</p>
+    <div class="payment-grid">
+      <div class="payment-card"><span class="payment-icon">&#128083;</span><div class="payment-platform">PayPal</div><div class="payment-handle">@mikelcal</div></div>
+      <div class="payment-card"><span class="payment-icon">&#128156;</span><div class="payment-platform">Venmo</div><div class="payment-handle">@mikelcal</div></div>
+      <div class="payment-card"><span class="payment-icon">&#128154;</span><div class="payment-platform">Cash App</div><div class="payment-handle">$mikelcal</div></div>
+    </div>
+    <p class="tips-disclaimer">* Contributions are not tax-deductible. UC Berkeley is, however, very much accredited.</p>
+  </div>
+</section>
+
+<footer>
+  Built with <span>&#9825;</span>, <span>D3.js</span>, and the kind of <span>last-minute energy</span> that got me through this program.<br>
+  Mikel Calderon &middot; MIDS 2026 &middot; mikelcal.co &middot; neuronfps on Twitch<br>
+  <a href="https://github.com/mikelcal" target="_blank">github.com/mikelcal</a>
+  <span style="opacity:.2;"> &middot; </span>
+  <a href="https://www.linkedin.com/in/mikelcal/" target="_blank">linkedin.com/in/mikelcal</a><br>
+  <span style="opacity:.35;">&plusmn; 200hrs margin of error &middot; methodology: vibes + regression &middot; Luna did not help</span>
+</footer>
+
+<script>
+// ── CONFETTI ─────────────────────────────────────────────────────────────────
+(function(){
+  var canvas=document.getElementById('confetti-canvas');
+  var ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  var colors=['#FDB515','#003262','#3B7EA1','#E8A030','#FDFAF3','#A78BBA','#F87171','#68D391'];
+  var shapes=['rect','circle','ribbon'];
+  var pieces=[]; var frame=0;
+  for(var i=0;i<200;i++){
+    pieces.push({
+      x:Math.random()*canvas.width, y:-Math.random()*canvas.height*0.6-20,
+      w:Math.random()*10+5, h:Math.random()*5+3,
+      color:colors[Math.floor(Math.random()*colors.length)],
+      shape:shapes[Math.floor(Math.random()*shapes.length)],
+      rotation:Math.random()*Math.PI*2, rotSpeed:(Math.random()-.5)*.14,
+      vx:(Math.random()-.5)*1.4, vy:Math.random()*1.2+0.4, opacity:1,
+      delay:Math.random()*180
+    });
+  }
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    var allGone=true;
+    pieces.forEach(function(p){
+      if(frame<p.delay){allGone=false;return;}
+      allGone=false;
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.018; p.rotation+=p.rotSpeed;
+      if(p.y>canvas.height+20) p.opacity=Math.max(0,p.opacity-.008);
+      if(p.opacity<=0) return;
+      ctx.save(); ctx.globalAlpha=p.opacity;
+      ctx.translate(p.x,p.y); ctx.rotate(p.rotation); ctx.fillStyle=p.color;
+      if(p.shape==='circle'){ctx.beginPath();ctx.arc(0,0,p.w/2,0,Math.PI*2);ctx.fill();}
+      else if(p.shape==='ribbon'){ctx.beginPath();ctx.moveTo(-p.w,0);ctx.bezierCurveTo(-p.w/2,-p.h*2,p.w/2,p.h*2,p.w,0);ctx.strokeStyle=p.color;ctx.lineWidth=2;ctx.stroke();}
+      else{ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);}
+      ctx.restore();
+    });
+    frame++;
+    if(frame<900||!allGone) requestAnimationFrame(draw);
+    else canvas.style.display='none';
+  }
+  setTimeout(draw,350);
+  window.addEventListener('resize',function(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;});
+})();
+
+// ── COUNTERS ─────────────────────────────────────────────────────────────────
+document.querySelectorAll('.counting').forEach(function(el){
+  new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      var target=parseInt(el.dataset.target);
+      var unit=el.querySelector('.stat-unit')?el.querySelector('.stat-unit').outerHTML:'';
+      var cur=0, step=target/(1600/16);
+      var t=setInterval(function(){ cur=Math.min(cur+step,target); el.innerHTML=Math.floor(cur).toLocaleString()+unit; if(cur>=target) clearInterval(t); },16);
+    });
+  },{threshold:0.3}).observe(el);
+});
+
+// ── REVEAL ───────────────────────────────────────────────────────────────────
+document.querySelectorAll('.reveal').forEach(function(el){
+  new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting) el.classList.add('visible'); });
+  },{threshold:0.08}).observe(el);
+});
+
+// ── COURSE GROUPS ────────────────────────────────────────────────────────────
+new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(!e.isIntersecting) return;
+    document.querySelectorAll('.course-group').forEach(function(g,i){
+      setTimeout(function(){g.classList.add('visible');},i*120);
+    });
+  });
+},{threshold:0.05}).observe(document.getElementById('courseTable'));
+
+// ── COMMIT BARS ──────────────────────────────────────────────────────────────
+new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(!e.isIntersecting) return;
+    document.querySelectorAll('.commit-bar').forEach(function(bar){
+      setTimeout(function(){bar.style.height=bar.dataset.height+'px';},200);
+    });
+  });
+},{threshold:0.3}).observe(document.getElementById('commitBars'));
+
+// ── HELPER: get real pixel width ─────────────────────────────────────────────
+function getWidth(el){
+  var w=el.getBoundingClientRect().width;
+  if(!w) w=el.parentElement.getBoundingClientRect().width;
+  if(!w) w=window.innerWidth-48;
+  return Math.max(w,600);
+}
+
+// ── D3 TIMELINE ──────────────────────────────────────────────────────────────
+setTimeout(function(){
+  var events=[
+    {date:new Date('2024-03-19'),label:'Accepted!',note:'UC Berkeley MIDS acceptance. The journey begins.',type:'milestone'},
+    {date:new Date('2024-05-05'),label:'First day of class',note:'DATASCI 200 & 201 start. Summer 2024. Here we go.',type:'milestone'},
+    {date:new Date('2024-08-01'),label:'Stats hits different',note:'DATASCI 203 - D - The hard semester. Enough said.',type:'hard'},
+    {date:new Date('2024-08-15'),label:'Data Engineering',note:'DATASCI 205 - B+ - Held it together.',type:'course'},
+    {date:new Date('2024-11-01'),label:'Yung Pueblo arrives',note:'The parallel curriculum begins. Just as important.',type:'personal'},
+    {date:new Date('2025-01-15'),label:'Stats: The Retake',note:'DATASCI 203 - C+ - Stared it down. Loved R. Earned it.',type:'milestone'},
+    {date:new Date('2025-02-01'),label:'Data Visualization',note:'DATASCI 209 - B - Built a live D3 dashboard. Gas.',type:'course'},
+    {date:new Date('2025-07-01'),label:'Applied ML - A',note:'DATASCI 207 - Redemption arc: unlocked.',type:'milestone'},
+    {date:new Date('2025-09-01'),label:'Humans & Values - A-',note:'DATASCI 231 - Ethics frameworks. Brain: tickled.',type:'course'},
+    {date:new Date('2025-11-01'),label:'Causality - C',note:'DATASCI 241 - Watched everything. Grade != engagement.',type:'course'},
+    {date:new Date('2026-01-15'),label:'W261 begins',note:'ML at Scale. PySpark. Databricks. The final boss.',type:'hard'},
+    {date:new Date('2026-03-08'),label:'Undercurrent goes live',note:'Capstone live. 10 countries. 6 languages. It slaps.',type:'milestone'},
+    {date:new Date('2026-04-14'),label:'Last day of class',note:'April 14, 2026. The final lecture.',type:'milestone'},
+    {date:new Date('2026-05-19'),label:'Greek Theatre - 7PM',note:'MIDS Class of 2026. Robert Reich keynotes. The circle closes.',type:'milestone'},
+    {date:new Date('2026-12-01'),label:"What's next?",note:'TBD. The foundation is built. Watch this space.',type:'future'},
+  ];
+  var colors={milestone:'#FDB515',hard:'#6B8899',course:'#3B7EA1',personal:'#A78BBA',future:'#68D391'};
+  var wrap=document.getElementById('timeline-wrap');
+  var W=getWidth(wrap);
+  var allDates=events.map(function(d){return d.date;});
+  var minD=new Date(d3.min(allDates)); minD.setMonth(minD.getMonth()-2);
+  var maxD=new Date(d3.max(allDates)); maxD.setMonth(maxD.getMonth()+2);
+  var ml=24,mr=24,H=400,H2=110,totalH=H+H2+80;
+  var svg=d3.select('#timeline-svg').attr('viewBox','0 0 '+W+' '+totalH).attr('height',totalH).style('width','100%');
+  var x=d3.scaleTime().domain([minD,maxD]).range([ml,W-mr]);
+  var x2=x.copy();
+  var midY=H/2;
+  svg.append('defs').append('clipPath').attr('id','tclip')
+    .append('rect').attr('x',ml).attr('y',0).attr('width',W-ml-mr).attr('height',H);
+  svg.append('line').attr('x1',ml).attr('x2',W-mr).attr('y1',midY).attr('y2',midY)
+    .attr('stroke','rgba(0,50,98,0.15)').attr('stroke-width',1.5);
+  var axisG=svg.append('g').attr('transform','translate(0,'+(H-16)+')');
+  function drawAxis(scale){
+    axisG.call(d3.axisBottom(scale).ticks(7).tickSize(0).tickFormat(d3.timeFormat('%b %Y')));
+    axisG.select('.domain').remove();
+    axisG.selectAll('text').attr('font-family','IBM Plex Mono, monospace').attr('font-size','11px').attr('fill','#4A5E72').attr('dy','1.2em');
+  }
+  drawAxis(x);
+  var tooltip=d3.select('body').append('div')
+    .style('position','fixed').style('background','#003262')
+    .style('border','1px solid rgba(253,181,21,0.45)').style('padding','12px 16px')
+    .style('font-family','IBM Plex Mono, monospace').style('font-size','12px')
+    .style('color','#FDFAF3').style('pointer-events','none').style('opacity',0)
+    .style('z-index','9999').style('max-width','240px').style('line-height','1.7')
+    .style('box-shadow','0 8px 24px rgba(0,0,0,0.3)');
+  var eventsG=svg.append('g').attr('clip-path','url(#tclip)');
+  var leg=svg.append('g').attr('transform','translate('+(ml+8)+',10)');
+  [['milestone','Milestone'],['course','Course'],['hard','Hard stretch'],['personal','Personal'],['future','Future']].forEach(function(pair,i){
+    var g=leg.append('g').attr('transform','translate('+(i*115)+',0)');
+    g.append('circle').attr('r',5).attr('fill',colors[pair[0]]).attr('opacity',.85);
+    g.append('text').text(pair[1]).attr('x',10).attr('y',4).attr('font-family','IBM Plex Mono, monospace').attr('font-size','10px').attr('fill','#4A5E72');
+  });
+  function renderEvents(scale){
+    eventsG.selectAll('*').remove();
+    events.forEach(function(d,i){
+      var cx=scale(d.date);
+      var above=i%2===0;
+      var lineLen=above?-115:115;
+      var color=colors[d.type];
+      var isFuture=d.type==='future';
+      eventsG.append('line').attr('x1',cx).attr('x2',cx).attr('y1',midY).attr('y2',midY+lineLen)
+        .attr('stroke',color).attr('stroke-width',1.5).attr('stroke-dasharray',isFuture?'6,4':'4,3').attr('opacity',isFuture?0.35:0.5);
+      eventsG.append('circle').attr('cx',cx).attr('cy',midY).attr('r',isFuture?5:6)
+        .attr('fill',isFuture?'none':color).attr('stroke',color).attr('stroke-width',2)
+        .attr('stroke-dasharray',isFuture?'3,2':'none').attr('opacity',isFuture?0.6:1)
+        .style('cursor','pointer')
+        .on('mouseover',function(event){
+          tooltip.transition().duration(120).style('opacity',1);
+          tooltip.html('<div style="color:'+color+';font-size:10px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:5px;">'+d3.timeFormat('%B %Y')(d.date)+'</div><div style="font-weight:700;font-size:13px;margin-bottom:5px;">'+d.label+'</div><div style="color:rgba(253,248,243,0.6);font-size:11px;">'+d.note+'</div>');
+        })
+        .on('mousemove',function(event){tooltip.style('left',(event.clientX+16)+'px').style('top',(event.clientY-12)+'px');})
+        .on('mouseout',function(){tooltip.transition().duration(200).style('opacity',0);});
+      var words=d.label.split(' ');
+      var mid=Math.ceil(words.length/2);
+      var labelY=midY+lineLen+(above?-12:20);
+      eventsG.append('text').attr('x',cx).attr('y',labelY-(words.length>2?6:0))
+        .attr('text-anchor','middle').attr('font-family','IBM Plex Mono, monospace')
+        .attr('font-size','10px').attr('fill',color).attr('opacity',isFuture?0.5:0.9)
+        .text(words.slice(0,mid).join(' '));
+      if(words.length>2){
+        eventsG.append('text').attr('x',cx).attr('y',labelY+8)
+          .attr('text-anchor','middle').attr('font-family','IBM Plex Mono, monospace')
+          .attr('font-size','10px').attr('fill',color).attr('opacity',isFuture?0.5:0.9)
+          .text(words.slice(mid).join(' '));
+      }
+    });
+  }
+  renderEvents(x);
+  var ctxY=H+36;
+  var ctxG=svg.append('g').attr('transform','translate(0,'+ctxY+')');
+  ctxG.append('rect').attr('x',ml).attr('width',W-ml-mr).attr('height',H2)
+    .attr('fill','rgba(0,50,98,0.03)').attr('stroke','rgba(0,50,98,0.08)').attr('stroke-width',1);
+  ctxG.append('line').attr('x1',ml).attr('x2',W-mr).attr('y1',H2/2).attr('y2',H2/2)
+    .attr('stroke','rgba(0,50,98,0.12)').attr('stroke-width',1);
+  events.forEach(function(d){
+    ctxG.append('circle').attr('cx',x2(d.date)).attr('cy',H2/2)
+      .attr('r',d.type==='future'?3:4).attr('fill',colors[d.type]).attr('opacity',d.type==='future'?0.35:0.55);
+  });
+  ctxG.append('g').attr('transform','translate(0,'+(H2+4)+')')
+    .call(d3.axisBottom(x2).ticks(6).tickSize(0).tickFormat(d3.timeFormat('%b %Y')))
+    .call(function(g){g.select('.domain').remove();g.selectAll('text').attr('font-family','IBM Plex Mono, monospace').attr('font-size','10px').attr('fill','#4A5E72');});
+  var brush=d3.brushX().extent([[ml,0],[W-mr,H2]])
+    .on('brush end',function(event){
+      if(!event.selection) return;
+      var sel=event.selection;
+      x.domain([x2.invert(sel[0]),x2.invert(sel[1])]);
+      drawAxis(x); renderEvents(x);
+    });
+  ctxG.append('g').attr('class','brush').call(brush)
+    .call(brush.move,[ml+(W-ml-mr)*0.02,ml+(W-ml-mr)*0.88]);
+  ctxG.select('.brush .selection').attr('fill','rgba(253,181,21,0.12)').attr('stroke','rgba(253,181,21,0.4)');
+}, 100);
+
+// ── D3 CLUSTER FORCE GRAPH ───────────────────────────────────────────────────
+setTimeout(function(){
+  var groups={
+    concept:{label:'Concepts', color:'#3B7EA1',cx_frac:0.20,cy_frac:0.32,r:130},
+    tool:   {label:'Tools',   color:'#FDB515',cx_frac:0.62,cy_frac:0.25,r:130},
+    vibe:   {label:'Vibes',   color:'#9B7BB8',cx_frac:0.40,cy_frac:0.74,r:130},
+    capstone:{label:'Capstone',color:'#E8A030',cx_frac:0.83,cy_frac:0.62,r:115},
+  };
+  var nodes=[
+    {id:'Statistics',group:'concept',size:15},{id:'Causal Inference',group:'concept',size:14},
+    {id:'Machine Learning',group:'concept',size:15},{id:'Data Engineering',group:'concept',size:13},
+    {id:'Data Ethics',group:'concept',size:13},{id:'Data Visualization',group:'concept',size:14},
+    {id:'Deep Learning',group:'concept',size:12},{id:'Regression',group:'concept',size:11},
+    {id:'Hypothesis Testing',group:'concept',size:11},{id:'Bias Auditing',group:'concept',size:11},
+    {id:'Potential Outcomes',group:'concept',size:10},
+    {id:'PySpark',group:'tool',size:15},{id:'Python',group:'tool',size:14},
+    {id:'R / RStudio',group:'tool',size:14},{id:'Databricks',group:'tool',size:13},
+    {id:'D3.js',group:'tool',size:13},{id:'PostgreSQL',group:'tool',size:12},
+    {id:'Neo4j',group:'tool',size:12},{id:'GitHub',group:'tool',size:12},
+    {id:'Jupyter',group:'tool',size:11},{id:'FastAPI',group:'tool',size:11},
+    {id:'scikit-learn',group:'tool',size:11},{id:'LaTeX',group:'tool',size:10},
+    {id:'existential dread',group:'vibe',size:14},{id:'last-minute hustle',group:'vibe',size:13},
+    {id:'11:59 PM submissions',group:'vibe',size:12},{id:'Spark job... loading',group:'vibe',size:12},
+    {id:'it was a semicolon',group:'vibe',size:11},{id:"you're still on mute",group:'vibe',size:11},
+    {id:'40 tabs open',group:'vibe',size:11},{id:'caffeine (229mg)',group:'vibe',size:11},
+    {id:'Luna',group:'vibe',size:10},{id:'the comeback',group:'vibe',size:12},
+    {id:'Undercurrent',group:'capstone',size:18},{id:'GDELT',group:'capstone',size:10},
+    {id:'Wikipedia API',group:'capstone',size:10},{id:'Google Trends',group:'capstone',size:10},
+    {id:'10 countries',group:'capstone',size:10},{id:'6 languages',group:'capstone',size:10},
+  ];
+  var links=[
+    {source:'PySpark',target:'Databricks',strength:.8},
+    {source:'PySpark',target:'Machine Learning',strength:.5},
+    {source:'PySpark',target:'existential dread',strength:.15},
+    {source:'PySpark',target:'Spark job... loading',strength:.2},
+    {source:'Statistics',target:'Regression',strength:.8},
+    {source:'Statistics',target:'Hypothesis Testing',strength:.8},
+    {source:'Statistics',target:'R / RStudio',strength:.7},
+    {source:'Causal Inference',target:'Potential Outcomes',strength:.8},
+    {source:'Machine Learning',target:'scikit-learn',strength:.7},
+    {source:'Machine Learning',target:'Deep Learning',strength:.6},
+    {source:'Machine Learning',target:'Python',strength:.6},
+    {source:'Data Ethics',target:'Bias Auditing',strength:.8},
+    {source:'Data Visualization',target:'D3.js',strength:.8},
+    {source:'Undercurrent',target:'GDELT',strength:.9},
+    {source:'Undercurrent',target:'Wikipedia API',strength:.9},
+    {source:'Undercurrent',target:'Google Trends',strength:.9},
+    {source:'Undercurrent',target:'10 countries',strength:.9},
+    {source:'Undercurrent',target:'6 languages',strength:.9},
+    {source:'Undercurrent',target:'FastAPI',strength:.8},
+    {source:'Undercurrent',target:'PostgreSQL',strength:.8},
+    {source:'Undercurrent',target:'D3.js',strength:.4},
+    {source:'Neo4j',target:'Data Engineering',strength:.6},
+    {source:'LaTeX',target:'existential dread',strength:.15},
+    {source:'caffeine (229mg)',target:'last-minute hustle',strength:.35},
+    {source:'caffeine (229mg)',target:'existential dread',strength:.2},
+    {source:'40 tabs open',target:'last-minute hustle',strength:.35},
+    {source:'last-minute hustle',target:'11:59 PM submissions',strength:.7},
+    {source:'Luna',target:'caffeine (229mg)',strength:.2},
+    {source:'the comeback',target:'R / RStudio',strength:.2},
+    {source:'Data Engineering',target:'PostgreSQL',strength:.6},
+    {source:'Data Engineering',target:'PySpark',strength:.6},
+  ];
+
+  var wrap=document.getElementById('force-wrap');
+  var W=getWidth(wrap);
+  var H=760;
+  var svgEl=document.getElementById('force-svg');
+  svgEl.setAttribute('viewBox','0 0 '+W+' '+H);
+  svgEl.setAttribute('width',W);
+  svgEl.style.width='100%';
+
+  var svg=d3.select('#force-svg');
+  svg.append('rect').attr('width',W).attr('height',H).attr('fill','rgba(0,0,0,0)');
+
+  Object.keys(groups).forEach(function(k){ var g=groups[k]; g.cx=g.cx_frac*W; g.cy=g.cy_frac*H; });
+
+  Object.keys(groups).forEach(function(k){
+    var g=groups[k];
+    svg.append('circle').attr('cx',g.cx).attr('cy',g.cy).attr('r',g.r)
+      .attr('fill',g.color).attr('fill-opacity',.05)
+      .attr('stroke',g.color).attr('stroke-opacity',.18)
+      .attr('stroke-width',1).attr('stroke-dasharray','6,5');
+    svg.append('circle').attr('cx',g.cx).attr('cy',g.cy).attr('r',g.r*.55)
+      .attr('fill',g.color).attr('fill-opacity',.03).attr('stroke','none');
+    svg.append('text').attr('x',g.cx).attr('y',g.cy-g.r-12)
+      .attr('text-anchor','middle').attr('font-family','IBM Plex Mono, monospace')
+      .attr('font-size','11px').attr('letter-spacing','0.2em')
+      .attr('fill',g.color).attr('opacity',.55).text(g.label.toUpperCase());
+  });
+
+  nodes.forEach(function(n){ var g=groups[n.group]; n.x=g.cx+(Math.random()-.5)*g.r*.8; n.y=g.cy+(Math.random()-.5)*g.r*.8; });
+
+  var sim=d3.forceSimulation(nodes)
+    .force('link',d3.forceLink(links).id(function(d){return d.id;})
+      .distance(function(d){return 55+(1-(d.strength||.5))*55;})
+      .strength(function(d){return d.strength||.35;}))
+    .force('charge',d3.forceManyBody().strength(-70))
+    .force('cluster',function(){
+      nodes.forEach(function(n){ var g=groups[n.group]; n.vx+=(g.cx-n.x)*.022; n.vy+=(g.cy-n.y)*.022; });
+    })
+    .force('collision',d3.forceCollide(function(d){return d.size+11;}))
+    .alphaDecay(.022);
+
+  var link=svg.append('g').selectAll('line').data(links).join('line')
+    .attr('stroke',function(d){
+      var sn=nodes.find(function(n){return n.id===(typeof d.source==='object'?d.source.id:d.source);});
+      var tn=nodes.find(function(n){return n.id===(typeof d.target==='object'?d.target.id:d.target);});
+      return (sn&&tn&&sn.group===tn.group)?groups[sn.group].color:'rgba(253,248,243,0.08)';
+    })
+    .attr('stroke-opacity',function(d){return d.strength>.6?.28:.09;})
+    .attr('stroke-width',1.5);
+
+  var node=svg.append('g').selectAll('g').data(nodes).join('g')
+    .call(d3.drag()
+      .on('start',function(e,d){if(!e.active) sim.alphaTarget(.3).restart();d.fx=d.x;d.fy=d.y;})
+      .on('drag',function(e,d){d.fx=e.x;d.fy=e.y;})
+      .on('end',function(e,d){if(!e.active) sim.alphaTarget(0);d.fx=null;d.fy=null;})
+    );
+
+  node.append('circle')
+    .attr('r',function(d){return d.size;})
+    .attr('fill',function(d){return groups[d.group].color;})
+    .attr('fill-opacity',function(d){return d.group==='vibe'?.42:.82;})
+    .attr('stroke',function(d){return groups[d.group].color;})
+    .attr('stroke-opacity',.35).attr('stroke-width',1.5);
+
+  node.append('text')
+    .text(function(d){return d.id;})
+    .attr('font-family',function(d){return d.group==='vibe'?'Playfair Display, serif':'IBM Plex Mono, monospace';})
+    .attr('font-style',function(d){return d.group==='vibe'?'italic':'normal';})
+    .attr('font-size',function(d){return Math.max(9,d.size*.72)+'px';})
+    .attr('fill',function(d){return d.group==='vibe'?'rgba(253,248,243,0.5)':'rgba(253,248,243,0.92)';})
+    .attr('text-anchor','middle').attr('dy',function(d){return d.size+13;})
+    .style('pointer-events','none').style('user-select','none');
+
+  sim.on('tick',function(){
+    link.attr('x1',function(d){return d.source.x;}).attr('y1',function(d){return d.source.y;})
+        .attr('x2',function(d){return d.target.x;}).attr('y2',function(d){return d.target.y;});
+    node.attr('transform',function(d){
+      return 'translate('+Math.max(d.size+4,Math.min(W-d.size-4,d.x))+','+Math.max(d.size+4,Math.min(H-d.size-4,d.y))+')';
+    });
+  });
+}, 150);
+</script>
+</body>
+</html>

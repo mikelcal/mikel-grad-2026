@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign the Guestbook — Mikel Calderon MIDS 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@400;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#FDB515; --gold-dim:#C8900F; --gold-pale:#FEF0C7;
+  --blue:#003262; --blue-mid:#1A4A7A; --blue-light:#3B7EA1;
+  --blue-pale:#EEF4F8; --cream:#FDFAF3; --ink:#0E1B2A;
+  --muted:#4A5E72; --rule:rgba(0,50,98,0.1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--blue);color:var(--cream);
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:17px;line-height:1.6;min-height:100vh;
+}
+.page-bg{
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(253,181,21,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(253,181,21,0.04) 1px,transparent 1px);
+  background-size:48px 48px;pointer-events:none;z-index:0;
+}
+.page-glow{
+  position:fixed;width:700px;height:700px;
+  background:radial-gradient(circle,rgba(253,181,21,0.07) 0%,transparent 65%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  pointer-events:none;z-index:0;
+}
+.page{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:4rem 2rem 6rem;}
+
+.back-link{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:'IBM Plex Mono',monospace;font-size:.75rem;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:rgba(253,181,21,.6);text-decoration:none;
+  margin-bottom:3rem;transition:color .2s;
+}
+.back-link:hover{color:var(--gold);}
+.back-link:hover svg{transform:translateX(-3px);}
+.back-link svg{transition:transform .2s;}
+
+.page-badge{
+  display:inline-flex;align-items:center;gap:.8rem;
+  border:1px solid rgba(253,181,21,.3);
+  padding:.4rem 1.2rem;margin-bottom:1.5rem;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.7rem;letter-spacing:.2em;
+  color:var(--gold);text-transform:uppercase;
+}
+.page-badge::before,.page-badge::after{
+  content:'';display:block;width:16px;height:1px;
+  background:var(--gold);opacity:.4;
+}
+h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.8rem,7vw,5rem);font-weight:900;
+  color:var(--cream);line-height:.95;letter-spacing:-.03em;margin-bottom:1rem;
+}
+h1 em{color:var(--gold);font-style:italic;}
+.page-sub{
+  font-size:1rem;color:rgba(253,248,243,.55);
+  max-width:520px;line-height:1.75;margin-bottom:.75rem;
+  font-family:'Playfair Display',serif;font-style:italic;
+}
+.event-nudge{
+  display:inline-flex;gap:1.5rem;flex-wrap:wrap;
+  margin-bottom:3rem;margin-top:.25rem;
+}
+.event-nudge a{
+  font-family:'IBM Plex Mono',monospace;font-size:.72rem;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold);text-decoration:none;opacity:.7;
+  border-bottom:1px solid rgba(253,181,21,.3);
+  padding-bottom:1px;transition:opacity .2s;
+}
+.event-nudge a:hover{opacity:1;}
+
+/* FORM */
+.form-card{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(253,181,21,.2);
+  padding:2rem;margin-bottom:3rem;
+}
+.form-row{margin-bottom:1.25rem;}
+.form-row label{
+  display:block;font-family:'IBM Plex Mono',monospace;
+  font-size:.72rem;letter-spacing:.18em;color:var(--gold);
+  text-transform:uppercase;margin-bottom:.4rem;
+}
+.form-row input,.form-row textarea,.form-row select{
+  width:100%;background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);color:var(--cream);
+  font-family:'IBM Plex Sans',sans-serif;font-size:1rem;
+  padding:.75rem 1rem;outline:none;
+  transition:border-color .2s,background .2s;
+  border-radius:0;-webkit-appearance:none;
+}
+.form-row input::placeholder,.form-row textarea::placeholder{color:rgba(253,248,243,.25);}
+.form-row input:focus,.form-row textarea:focus,.form-row select:focus{
+  border-color:rgba(253,181,21,.5);background:rgba(255,255,255,.1);
+}
+.form-row select option{background:var(--blue);color:var(--cream);}
+.form-row textarea{resize:vertical;min-height:100px;}
+.form-two{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:540px){.form-two{grid-template-columns:1fr;}}
+.char-count{
+  font-family:'IBM Plex Mono',monospace;font-size:.65rem;
+  color:rgba(253,248,243,.25);text-align:right;
+  margin-top:.3rem;letter-spacing:.08em;
+}
+.char-count.warn{color:var(--gold);}
+.optional-tag{
+  font-family:'IBM Plex Mono',monospace;font-size:.6rem;
+  letter-spacing:.12em;color:rgba(253,248,243,.3);
+  text-transform:uppercase;margin-left:.4rem;
+  border:1px solid rgba(255,255,255,.15);padding:.1rem .35rem;
+  vertical-align:middle;
+}
+.contact-disclaimer{
+  display:flex;align-items:flex-start;gap:.4rem;
+  margin-top:.5rem;
+  font-size:.78rem;color:rgba(253,248,243,.35);
+  line-height:1.55;font-style:italic;
+}
+.contact-disclaimer a{
+  color:rgba(253,181,21,.5);text-decoration:none;
+  border-bottom:1px solid rgba(253,181,21,.2);
+}
+.contact-disclaimer a:hover{color:var(--gold);border-bottom-color:var(--gold);}
+.submit-row{display:flex;align-items:center;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;}
+.btn-submit{
+  background:var(--gold);color:var(--blue);
+  font-family:'IBM Plex Mono',monospace;font-size:.8rem;
+  font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  padding:1rem 2.5rem;border:none;cursor:pointer;transition:all .2s;
+}
+.btn-submit:hover:not(:disabled){background:#FFD166;transform:translateY(-2px);}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.submit-status{
+  font-family:'IBM Plex Mono',monospace;font-size:.75rem;
+  color:rgba(253,248,243,.5);letter-spacing:.08em;
+}
+.submit-status.success{color:#68D391;}
+.submit-status.error{color:#F87171;}
+
+/* ENTRIES */
+.entries-header{
+  display:flex;align-items:baseline;gap:1rem;margin-bottom:1.5rem;
+}
+.entries-title{
+  font-family:'Playfair Display',serif;
+  font-size:1.6rem;font-weight:700;color:var(--cream);
+}
+.entries-count{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.72rem;color:var(--gold);letter-spacing:.12em;
+}
+.entries-list{display:flex;flex-direction:column;gap:1rem;}
+.entry-card{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-left:3px solid var(--gold);
+  padding:1.5rem 1.75rem;
+  animation:entryIn .4s ease forwards;
+}
+@keyframes entryIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.entry-top{
+  display:flex;align-items:baseline;
+  justify-content:space-between;gap:1rem;
+  margin-bottom:.5rem;flex-wrap:wrap;
+}
+.entry-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--cream);}
+.entry-relation{
+  font-family:'IBM Plex Mono',monospace;font-size:.68rem;
+  letter-spacing:.15em;color:var(--gold);text-transform:uppercase;
+}
+.entry-date{
+  font-family:'IBM Plex Mono',monospace;font-size:.65rem;
+  color:rgba(253,248,243,.25);letter-spacing:.08em;margin-left:auto;
+}
+.entry-message{
+  font-size:.95rem;color:rgba(253,248,243,.75);
+  line-height:1.7;font-family:'Playfair Display',serif;font-style:italic;
+}
+.entry-attending{
+  margin-top:.75rem;font-family:'IBM Plex Mono',monospace;
+  font-size:.68rem;letter-spacing:.12em;
+  color:rgba(253,248,243,.3);text-transform:uppercase;
+}
+.entry-attending.yes{color:#68D391;}
+.entries-empty{
+  text-align:center;padding:3rem 2rem;
+  font-family:'Playfair Display',serif;
+  font-size:1.05rem;font-style:italic;
+  color:rgba(253,248,243,.3);
+}
+.entries-loading{
+  text-align:center;padding:2rem;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.75rem;letter-spacing:.15em;
+  color:rgba(253,248,243,.25);
+  animation:pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:.3;}50%{opacity:.7;}}
+
+.page-footer{
+  margin-top:4rem;padding-top:2rem;
+  border-top:1px solid rgba(255,255,255,.08);
+  text-align:center;font-family:'IBM Plex Mono',monospace;
+  font-size:.68rem;letter-spacing:.12em;
+  color:rgba(253,248,243,.2);line-height:2.2;
+}
+.page-footer a{color:rgba(253,181,21,.35);text-decoration:none;}
+.page-footer a:hover{color:var(--gold);}
+</style>
+</head>
+<body>
+<div class="page-bg"></div>
+<div class="page-glow"></div>
+
+<div class="page">
+  <a href="index.html" class="back-link">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Back to invitation
+  </a>
+
+  <div class="page-badge">Mikel Calderon &middot; MIDS 2026</div>
+
+  <h1>Sign the<br><em>Guestbook.</em></h1>
+
+  <p class="page-sub">
+    Leave a message, let me know if you're coming, or just say hi.
+    Every entry means a lot &mdash; thank you for being here.
+  </p>
+
+  <div class="event-nudge">
+    <a href="https://www.ischool.berkeley.edu/events/2026/commencement" target="_blank">I School Ceremony &rarr;</a>
+    <a href="https://commencement.berkeley.edu/" target="_blank">Spring Commencement &rarr;</a>
+    <a href="https://secure-tickets.berkeley.edu/31210" target="_blank">Get Tickets ($15) &rarr;</a>
+  </div>
+
+  <div class="form-card">
+    <div class="form-two">
+      <div class="form-row">
+        <label for="gb-name">Your Name</label>
+        <input type="text" id="gb-name" placeholder="First name is fine" maxlength="60" autocomplete="off">
+      </div>
+      <div class="form-row">
+        <label for="gb-relation">How do you know Mikel?</label>
+        <select id="gb-relation">
+          <option value="">Select one...</option>
+          <option value="Family">Family</option>
+          <option value="Friend">Friend</option>
+          <option value="MIDS Cohort">MIDS Cohort</option>
+          <option value="Colleague">Colleague</option>
+          <option value="Twitch / neuronfps">Twitch / neuronfps</option>
+          <option value="Stranger on the internet">Stranger on the internet</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label for="gb-message">Your Message</label>
+      <textarea id="gb-message" placeholder="Say something nice. Or funny. Or both." maxlength="500"></textarea>
+      <div class="char-count" id="char-count">0 / 500</div>
+    </div>
+
+    <div class="form-row">
+      <label for="gb-attending">Will you be there?</label>
+      <select id="gb-attending">
+        <option value="">Not sure yet</option>
+        <option value="I School - May 19">Yes &mdash; I School Ceremony (May 19)</option>
+        <option value="Commencement - May 16">Yes &mdash; Spring Commencement (May 16)</option>
+        <option value="Both ceremonies">Yes &mdash; Both ceremonies!</option>
+        <option value="Watching the stream">Watching the livestream</option>
+        <option value="In spirit">There in spirit</option>
+      </select>
+    </div>
+
+    <div class="form-row contact-field">
+      <label for="gb-contact">
+        Stay in touch? <span class="optional-tag">Optional</span>
+      </label>
+      <input type="text" id="gb-contact" placeholder="Email, phone, Instagram — your call, your terms"
+        maxlength="120" autocomplete="off">
+      <div class="contact-disclaimer">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;margin-top:2px;">
+          <circle cx="6" cy="6" r="5.5" stroke="currentColor" stroke-opacity=".5"/>
+          <path d="M6 5v4M6 3.5v.5" stroke="currentColor" stroke-linecap="round"/>
+        </svg>
+        <span>
+          Your contact info will only be seen by Mikel — never shared with third parties,
+          never published publicly, never sold. You have the right to request deletion at any time.
+          See the <a href="privacy.html">privacy policy</a> for the full picture.
+        </span>
+      </div>
+    </div>
+
+    <div class="submit-row">
+      <button class="btn-submit" id="submit-btn" onclick="submitEntry()">Sign the Guestbook</button>
+      <span class="submit-status" id="submit-status"></span>
+    </div>
+  </div>
+
+  <div class="entries-header">
+    <div class="entries-title">Messages</div>
+    <div class="entries-count" id="entries-count"></div>
+  </div>
+  <div class="entries-list" id="entries-list">
+    <div class="entries-loading" id="entries-loading">LOADING MESSAGES...</div>
+  </div>
+
+  <div class="page-footer">
+    Mikel Calderon &middot; MIDS 2026 &middot; UC Berkeley School of Information<br>
+    <a href="https://www.ischool.berkeley.edu/events/2026/commencement" target="_blank">I School Commencement Details</a>
+    &nbsp;&middot;&nbsp;
+    <a href="privacy.html">Privacy Policy</a>
+    &nbsp;&middot;&nbsp;
+    <a href="index.html">&larr; Back to the invitation</a>
+  </div>
+</div>
+
+<!-- Firebase RTDB (v9 compat) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+var firebaseConfig = {
+  apiKey:            "AIzaSyBmmSYVGDEsqmD2aB3Wx8sOUc4I5rRkoog",
+  authDomain:        "grad-guestbook.firebaseapp.com",
+  databaseURL:       "https://grad-guestbook-default-rtdb.firebaseio.com",
+  projectId:         "grad-guestbook",
+  storageBucket:     "grad-guestbook.firebasestorage.app",
+  messagingSenderId: "314071689135",
+  appId:             "1:314071689135:web:ee532e4826a5103477315a"
+};
+
+firebase.initializeApp(firebaseConfig);
+var db = firebase.database();
+var REF = db.ref('guestbook_entries');
+
+// ── CHAR COUNTER ─────────────────────────────────────────────────────────────
+var msgEl   = document.getElementById('gb-message');
+var countEl = document.getElementById('char-count');
+msgEl.addEventListener('input', function() {
+  var len = msgEl.value.length;
+  countEl.textContent = len + ' / 500';
+  countEl.className   = 'char-count' + (len > 440 ? ' warn' : '');
+});
+
+// ── SUBMIT ────────────────────────────────────────────────────────────────────
+function submitEntry() {
+  var name      = document.getElementById('gb-name').value.trim();
+  var relation  = document.getElementById('gb-relation').value;
+  var message   = document.getElementById('gb-message').value.trim();
+  var attending = document.getElementById('gb-attending').value;
+  var contact   = document.getElementById('gb-contact').value.trim();
+  var btn       = document.getElementById('submit-btn');
+
+  if (!name)    { flashStatus('Please add your name.', 'error'); return; }
+  if (!message) { flashStatus('A message would be lovely.', 'error'); return; }
+  if (message.length > 500) { flashStatus('Max 500 characters please.', 'error'); return; }
+
+  btn.disabled = true;
+  flashStatus('Signing...', '');
+
+  REF.push({
+    name:      name,
+    relation:  relation || 'Friend',
+    message:   message,
+    attending: attending || '',
+    contact:   contact || '',
+    timestamp: firebase.database.ServerValue.TIMESTAMP
+  })
+  .then(function() {
+    flashStatus('Signed! Thank you, ' + name + '. \u2665', 'success');
+    document.getElementById('gb-name').value      = '';
+    document.getElementById('gb-relation').value  = '';
+    document.getElementById('gb-message').value   = '';
+    document.getElementById('gb-attending').value = '';
+    document.getElementById('gb-contact').value   = '';
+    countEl.textContent = '0 / 500';
+    countEl.className   = 'char-count';
+    btn.disabled = false;
+  })
+  .catch(function(err) {
+    console.error(err);
+    flashStatus('Something went wrong. Try again?', 'error');
+    btn.disabled = false;
+  });
+}
+
+function flashStatus(msg, type) {
+  var el = document.getElementById('submit-status');
+  el.textContent = msg;
+  el.className   = 'submit-status' + (type ? ' ' + type : '');
+  if (type === 'error') {
+    setTimeout(function() { el.textContent = ''; el.className = 'submit-status'; }, 4000);
+  }
+}
+
+// ── LOAD ENTRIES (real-time) ──────────────────────────────────────────────────
+REF.orderByChild('timestamp').on('value', function(snapshot) {
+  var list    = document.getElementById('entries-list');
+  var loading = document.getElementById('entries-loading');
+  var countEl = document.getElementById('entries-count');
+
+  if (loading) { loading.remove(); }
+  list.innerHTML = '';
+
+  var entries = [];
+  snapshot.forEach(function(child) {
+    entries.push({ key: child.key, data: child.val() });
+  });
+
+  // Show newest first
+  entries.reverse();
+
+  if (entries.length === 0) {
+    var empty = document.createElement('div');
+    empty.className   = 'entries-empty';
+    empty.textContent = 'No messages yet. Be the first to sign.';
+    list.appendChild(empty);
+    countEl.textContent = '';
+    return;
+  }
+
+  var n = entries.length;
+  countEl.textContent = n + (n === 1 ? ' message' : ' messages');
+
+  entries.forEach(function(e) {
+    list.appendChild(renderEntry(e.data));
+  });
+
+}, function(err) {
+  console.error('RTDB error:', err);
+  var loading = document.getElementById('entries-loading');
+  if (loading) {
+    loading.textContent = 'Could not load messages. Check Firebase config.';
+    loading.style.color = '#F87171';
+    loading.style.animation = 'none';
+  }
+});
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function renderEntry(data) {
+  var ts      = data.timestamp ? new Date(data.timestamp) : new Date();
+  var dateStr = ts.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+  var isGoing = data.attending &&
+                data.attending !== 'In spirit' &&
+                data.attending !== 'Watching the stream';
+  // Note: data.contact is intentionally omitted from public rendering.
+  // It is stored in RTDB and visible only to the project owner in the Firebase console.
+
+  var card = document.createElement('div');
+  card.className = 'entry-card';
+  card.innerHTML =
+    '<div class="entry-top">' +
+      '<span class="entry-name">'     + esc(data.name)     + '</span>' +
+      (data.relation
+        ? '<span class="entry-relation">' + esc(data.relation) + '</span>'
+        : '') +
+      '<span class="entry-date">'     + dateStr             + '</span>' +
+    '</div>' +
+    '<div class="entry-message">&ldquo;' + esc(data.message) + '&rdquo;</div>' +
+    (data.attending
+      ? '<div class="entry-attending' + (isGoing ? ' yes' : '') + '">' +
+          (isGoing ? '&#10003; ' : '') + esc(data.attending) +
+        '</div>'
+      : '');
+  return card;
+}
+
+function esc(str) {
+  return String(str || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+</script>
+</body>
+</html>
